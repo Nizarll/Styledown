@@ -2,20 +2,20 @@
 
 ### Create
 ```
-python mymd.py create name.md
+python cli.py create name.md
 ```
 
 ### Delete
 ```
-python mymd.py delete name.md
+python cli.py delete name.md
 ```
 
 ### Show
 ```
-python mymd.py preview name.md
+python cli.py preview name.md
 ```
 
 ### list of md
 ```
-python mymd.py list
+python cli.py list
 ```
