@@ -1,21 +1,21 @@
 # Styledown
 
-###Create
+### Create
 ```
 python mymd.py create name.md
 ```
 
-###Delete
+### Delete
 ```
 python mymd.py delete name.md
 ```
 
-###Show
+### Show
 ```
 python mymd.py preview name.md
 ```
 
-###list of md
+### list of md
 ```
 python mymd.py list
 ```
