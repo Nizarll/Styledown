@@ -14,3 +14,21 @@ def emergency_icon(color: str = "red-500") -> str:
     </svg>
     '''
 
+def arrow_left() -> str:
+    return f'''<svg width="800px" height="800px" viewBox="0
+     0 24 24" fill="none" xmlns="http://www.w3.o
+    rg/2000/svg">
+    <path d="M6 12H18M6 12L11 7M6 12L11 17" stro
+    ke="#000000" stroke-width="2" stroke-linecap
+    ="round" stroke-linejoin="round"/>
+    </svg>
+    '''
+
+def arrow_right() -> str:
+    return f'''<svg width="800px" height="800px" viewBox="0
+     0 24 24" fill="none" xmlns="http://www.w3.o
+    rg/2000/svg">
+    <path d="M6 12H18M18 12L13 7M18 12L13 17" st
+    roke="#000000" stroke-width="2" stroke-linec
+    ap="round" stroke-linejoin="round"/>
+    </svg>'''

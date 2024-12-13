@@ -1,5 +1,5 @@
 from app.parser import Parser
-from app.markdown import MdTag, MdKind, MdHeading, MdTask, MdList, MdQuote, TaskKind
+from app.markdown import MdTag, MdKind, MdHeading, MdTask, MdList, MdQuote, MdCode, TaskKind
 from app.svgs import *
 
 import html
@@ -11,13 +11,7 @@ class Generator:
 
     def generate_html(self):
 
-        html_output = [
-            '<!DOCTYPE html>',
-            '<html>',
-            '<script src"https://cdn.jsdelivr.net/npm/windicss@3.5.6/index.min.js"></script>'
-                '<head><title>Markdown</title></head>',
-            '<body class="dark">',
-        ]
+        html_output = [ ]
 
         for token in self.tokens:
             if token.kind == MdKind.HEADING:
@@ -28,6 +22,8 @@ class Generator:
                 html_output.append(self._generate_list(token.list))
             elif token.kind == MdKind.QUOTE:
                 html_output.append(self._generate_quote(token.quote))
+            elif token.kind == MdKind.CODE:
+                html_output.append(self._generate_code(token.code))
 
         html_output.append("</body>")
         html_output.append("</html>")
@@ -36,25 +32,28 @@ class Generator:
 
     def _generate_heading(self, heading: MdHeading):
         content = heading.content
-        return f"<h{heading.level}>{html.escape(content)}</h{heading.level}>"
+        return f"<h{heading.level} class='text-{heading.level * 2}xl font-bold mb-4'>{html.escape(content)}</h{heading.level}>"
 
     def _generate_task(self, task: MdTask):
         checked = "checked" if task.kind == TaskKind.CHECKBOX_FILLED else ""
         description = task.description
         if task.kind == TaskKind.CHECKBOX_FILLED or task.kind == TaskKind.CHECKBOX_EMPTY:
-            return f'<div><input type="checkbox" {checked} disabled> {html.escape(description)}</div>'
+            return f'<div class="flex items-center mb-2"><input type="checkbox" {checked} disabled class="mr-2"> <span>{html.escape(description)}</span></div>'
         elif task.kind == TaskKind.WARNING:
-
-            return f'<div class="bg-amber-100 dark:bg-amber-200/60 border-l-4 border-yellow-500 py-1 px-4" ><div class="flex flex-row py-1 w-full text-amber-800 dark:text-amber-100 font-bold ">{warning_icon('text-amber-800 dark:text-amber-100')} <div class="py-2 px-2">Caution</div></div>{html.escape(description)}</div>'
+            return f'<div class="bg-amber-100 dark:bg-amber-200/60 border-l-4 border-yellow-500 py-2 px-4 mb-4"><div class="flex items-center text-amber-800 dark:text-amber-100 font-bold">{warning_icon("text-amber-800 dark:text-amber-100")}<span class="ml-2">Caution</span></div><p>{html.escape(description)}</p></div>'
         elif task.kind == TaskKind.EMERGENCY:
-            return f'<div class="dark:bg-red-200/60 bg-red-50 border-l-4 border-red-500 py-1 px-4" ><div class="flex flex-row py-1 w-full text-red-800 dark:text-red-300 font-bold">{emergency_icon('text-red-800 dark:text-red-300')} <div class="py-2 px-2">Emergency</div></div>{html.escape(description)}</div>'
-
+            return f'<div class="dark:bg-red-200/60 bg-red-50 border-l-4 border-red-500 py-2 px-4 mb-4"><div class="flex items-center text-red-800 dark:text-red-300 font-bold">{emergency_icon("text-red-800 dark:text-red-300")}<span class="ml-2">Emergency</span></div><p>{html.escape(description)}</p></div>'
 
     def _generate_list(self, md_list: MdList):
-        list_items = [f"<li>{html.escape(item)}</li>" for item in md_list.items]
-        return "<ul>" + "\n".join(list_items) + "</ul>"
+        list_items = [f"<li class='mb-1'>{html.escape(item)}</li>" for item in md_list.items]
+        return "<ul class='list-disc pl-5 mb-4'>" + "\n".join(list_items) + "</ul>"
 
     def _generate_quote(self, quote: MdQuote):
         content = quote.content
-        return f'<blockquote>{html.escape(content)}</blockquote>'
+        return f"<div class='border-l-4 border-gray-600 pl-4 italic'>{html.escape(content)}</div>"
+
+    def _generate_code(self, code: MdCode):
+        content = code.content
+        language = html.escape(code.language) if code.language else ""
+        return f'<pre class="bg-gray-800 rounded-lg p-4 overflow-auto mb-4"><code class="language-{language} block">{html.escape(content)}</code></pre>'
 

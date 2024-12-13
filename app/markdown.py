@@ -6,8 +6,8 @@ from typing import Optional, List
 class TaskKind(Enum):
     CHECKBOX_FILLED  = auto()
     CHECKBOX_EMPTY   = auto()
-    WARNING      = auto()
-    EMERGENCY    = auto()
+    WARNING          = auto()
+    EMERGENCY        = auto()
 
 class MdKind(Enum):
     HR_RULE = auto()
@@ -17,6 +17,7 @@ class MdKind(Enum):
     TASK    = auto()
     HEADING = auto()
     STYLING = auto()
+    CODE    = auto()
 
 @dataclass
 class MdHeading:
@@ -51,10 +52,28 @@ class MdGallery:
     style: str
     content: str
 
-@dataclass
 class MdStyling:
     style: str
     content: str
+
+@dataclass
+class MdCode:
+    language: str
+    content:str
+
+@dataclass
+class MdText:
+    content: str
+
+@dataclass
+class MdLink:
+    content: str ## [link css "path"]
+    kind: int # css ,[link file "path"]
+
+@dataclass
+class MdParam:
+    content: str ## [variant file]
+    kind: int
 
 @dataclass
 class MdTag:
@@ -66,4 +85,4 @@ class MdTag:
     list: Optional[MdList] = None
     task: Optional[MdTask] = None
     styling: Optional[MdStyling] = None
-
+    code: Optional[MdCode] = None
