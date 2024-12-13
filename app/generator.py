@@ -16,7 +16,7 @@ class Generator:
             '<html>',
             '<script src"https://cdn.jsdelivr.net/npm/windicss@3.5.6/index.min.js"></script>'
                 '<head><title>Markdown</title></head>',
-            '<body>'
+            '<body class="dark">',
         ]
 
         for token in self.tokens:
@@ -44,9 +44,10 @@ class Generator:
         if task.kind == TaskKind.CHECKBOX_FILLED or task.kind == TaskKind.CHECKBOX_EMPTY:
             return f'<div><input type="checkbox" {checked} disabled> {html.escape(description)}</div>'
         elif task.kind == TaskKind.WARNING:
-            return f'<div class="bg-amber-100 border-l-4 border-yellow-500 py-1 px-4" ><div class="flex flex-row py-1 w-full text-amber-800 ">{warning_icon('amber-800')} <div class="py-2 px-2">Caution</div></div>{html.escape(description)}</div>'
+
+            return f'<div class="bg-amber-100 dark:bg-amber-200/60 border-l-4 border-yellow-500 py-1 px-4" ><div class="flex flex-row py-1 w-full text-amber-800 dark:text-amber-100 font-bold ">{warning_icon('text-amber-800 dark:text-amber-100')} <div class="py-2 px-2">Caution</div></div>{html.escape(description)}</div>'
         elif task.kind == TaskKind.EMERGENCY:
-            return f'<div class="bg-red-100 border-l-4 border-red-500 py-1 px-4" ><div class="flex flex-row py-1 w-full text-red-800 ">{emergency_icon('red-800')} <div class="py-2 px-2">Emergency</div></div>{html.escape(description)}</div>'
+            return f'<div class="dark:bg-red-200/60 bg-red-50 border-l-4 border-red-500 py-1 px-4" ><div class="flex flex-row py-1 w-full text-red-800 dark:text-red-300 font-bold">{emergency_icon('text-red-800 dark:text-red-300')} <div class="py-2 px-2">Emergency</div></div>{html.escape(description)}</div>'
 
 
     def _generate_list(self, md_list: MdList):

@@ -1,6 +1,6 @@
 import sys
 from app.server import start_server
-from app.parser import create_markdown, delete_markdown, list_markdown_files
+# from app.parser import create_markdown, delete_markdown, list_markdown_files
 
 def main():
     """CLI pour gérer les commandes Markdown."""
@@ -17,13 +17,13 @@ def main():
     if command == "create":
         if len(sys.argv) < 3:
             print("Veuillez fournir un nom de fichier.")
-        else:
-            create_markdown(sys.argv[2])
+        # else:
+        #    create_markdown(sys.argv[2])
     elif command == "delete":
         if len(sys.argv) < 3:
             print("Veuillez fournir un nom de fichier.")
-        else:
-            delete_markdown(sys.argv[2])
+        # else:
+        #     delete_markdown(sys.argv[2])
     elif command == "list":
         list_markdown_files()
     elif command == "preview":
