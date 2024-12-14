@@ -1,10 +1,8 @@
-[file "test2.md"]
-
 # Linux Booting
 
 [!] CS:IP does not apply at reboot
 
-# assembly
+# assembly example
 ```nasm
 section .data
     msg db 'Hello, World!', 0xA   ; Message to print with newline
@@ -20,7 +18,8 @@ _start:
     mov ecx, msg                  ; pointer to the message
     mov edx, msg_len              ; length of the message
     int 0x80                      ; make the syscall
-; Exit the program (system call: exit)
+
+    ; Exit the program (system call: exit)
     mov eax, 1                    ; syscall number for exit
     xor ebx, ebx                  ; exit code 0
     int 0x80                      ; make the syscall

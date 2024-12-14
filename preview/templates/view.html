@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark:bg-[#18181b]">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -296,23 +296,56 @@
     font-style: italic;
     }
     </style>
-
     <script>
-    const socket = io();
-    socket.on('update', (data) => {
-      const newContent = data.html;
-      const bodyElement = document.getElementsByTagName('body')[0];
-      const parser = new DOMParser();
-      const newDoc = parser.parseFromString(newContent, 'text/html');
-      bodyElement.innerHTML = newDoc.body.innerHTML;
-      Prism.highlightAll();  // This will re-apply syntax highlighting
-    });
+      let socket;
+    
+      function establishSocketConnection() {
+        
+        if (socket && socket.connected) {
+          console.log('Disconnecting existing socket connection...');
+          socket.disconnect();
+        }
+    
+        socket = io();
+        console.log('New socket connection established');
+    
+        socket.on('update', (data) => {
+          console.log('received update');
+          const newContent = data.html;
+          const bodyElement = document.getElementsByTagName('body')[0];
+          const parser = new DOMParser();
+          const newDoc = parser.parseFromString(newContent, 'text/html');
+          bodyElement.innerHTML = newDoc.body.innerHTML;
+          Prism.highlightAll(); // Re-apply syntax highlighting
+        });
+    
+        // Handle connection errors
+        socket.on('connect_error', (error) => {
+          console.error('Socket connection error:', error);
+        });
+    
+        // Log connection and disconnection events
+        socket.on('connect', () => {
+          console.log('Socket connected');
+        });
+    
+        socket.on('disconnect', (reason) => {
+          console.log('Socket disconnected:', reason);
+        });
+      }
+    
+      // Establish the initial connection
+      establishSocketConnection();
+    
     </script>
     <style>
-    html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
+    html.dark, body.dark {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+    html.dark, body.dark {
+      background: #18181b;
     }
     pre, code {
     font-family: inherit !important;
@@ -320,13 +353,10 @@
 
     </style>
   </head>
-  <body class="">
-    <div class="dark:bg-[#09090b] bg-gray-50  text-gray-800 dark:text-gray-50">
-
-
+  <body class="dark:bg-black w-full h-full bg-gray-50:">
+    <div class="bg-gray-50  text-gray-800 dark:text-gray-50">
       <!-- HEADER SECTION  -->
       <section class="flex sticky items-center justify-between p-4 bg-white dark:bg-[#09090b]">
-
         <div id= "menu" class="inline-block text-left">
           <button 
             type="button" 
@@ -360,33 +390,10 @@
       </section>
 
     </div>
-    <div class="flex flex-row w-full dark:bg-[#18181b] bg-white">
-      <div class="flex justify-start flex-col mx-4">
-        <ul class="justify-start text-sm w-full list-none pl-0 my-0">
-          <li>
-            <button class="w-full border-l-2 border-gray-400 bg-white py-1 px-4 text-left text-gray-700">
-              file_1
-            </button>
-          </li>
-          <li>
-            <button class="w-full border-l-2 border-gray-400 bg-white py-1 px-4 text-left text-gray-700">
-              file_1
-            </button>
-          </li>
-          <li>
-            <button class="w-full border-l-2 border-gray-400 bg-gray-400 text-white rounded py-1 px-4 text-left text-gray-700">
-              file_1
-            </button>
-          </li>
-          <li>
-            <button class="w-full border-l-2 border-gray-400 bg-white py-1 px-4 text-left text-gray-700">
-              file_1
-            </button>
-          </li>
-        </ul>
+    <div>
+      <div id = "workspaces">
       </div>
-
-      <div class="bg-white w-[100%] dark:bg-[#18181b] shadow rounded-lg p-6 prose dark:text-gray-200">
+      <div class="bg-white dark:bg-[#18181b] w-[100%] dark:bg-[#18181b] shadow rounded-lg p-6 prose dark:text-gray-200">
         {{ content | safe }}
       </div>
     </div>
@@ -434,5 +441,6 @@
     })
     document.getElementById("mode-toggle").addEventListener("click", toggleMode);
     </script>
+
   </body>
 </html>

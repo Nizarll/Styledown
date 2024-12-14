@@ -6,8 +6,9 @@ import html
 import os
 
 class Generator:
-    def __init__(self, tokens):
+    def __init__(self, tokens, links):
         self.tokens = tokens
+        self.links = links
 
     def generate_html(self):
 
@@ -57,3 +58,26 @@ class Generator:
         language = html.escape(code.language) if code.language else ""
         return f'<pre class="bg-gray-800 rounded-lg p-4 overflow-auto mb-4"><code class="language-{language} block">{html.escape(content)}</code></pre>'
 
+    def generate_workspace_buttons(self):
+        workspace_buttons_html = '<div class="flex flex-row w-full bg-white dark:bg-[#18181b]">\n'
+        workspace_buttons_html += '<div class="flex justify-start flex-col mx-4">\n'
+        workspace_buttons_html += '<ul class="justify-start text-sm w-full list-none pl-0 my-0">\n'
+
+        for link in self.links:
+            if link.kind == 1:  # kind 1 corresponds to file links
+                # Create the button HTML for the file link
+                button_html = f'<li class="border-l-2 border-gray-400 py-1">\n'
+                button_html += f'<button class="w-full text-lg bg-white py-1 px-4 text-left text-gray-700">\n'
+                button_html += f'{html.escape(link.content)}\n'
+                button_html += f'</button>\n'
+                button_html += f'</li>\n'
+
+                # Append button to workspace buttons HTML
+                workspace_buttons_html += button_html
+
+        # Close the div and ul tags
+        workspace_buttons_html += '</ul>\n'
+        workspace_buttons_html += '</div>\n'
+        workspace_buttons_html += '</div>\n'
+
+        return workspace_buttons_html

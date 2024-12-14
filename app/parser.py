@@ -4,13 +4,12 @@ import os
 MARKDOWN_DIRECTORY = "markdowns"
 
 class Parser:
-    def __init__(self, filepath, env):
-        filepath += ".md"
+    def __init__(self, filepath):
         with open(filepath, 'r') as file:
             self.content = file.read()
         self.i = 0
         self.len = len(self.content)
-        self.env = env
+        self.links = []
         self.tokens = []
         self.state = "normal"
 
@@ -34,11 +33,6 @@ class Parser:
             self.i += 3
             return MdCode(language=language, content=content)
         return None
-
-    def peek(self, offset=1):
-        if self.i + offset > self.len - 1:
-            return '\0'
-        return self.content[self.i + offset]
 
     def match(self, text):
         if self.i + len(text) > self.len:
@@ -110,47 +104,51 @@ class Parser:
         return None
 
     def parse_link(self):
-        if not self.match("[link "):
+        if not self.match("["):
             return None
         kind = 0
-        self.i += 6
+        self.i += 1
+
         if self.match("css"):
             kind = 0
             self.i += 3
         elif self.match("file"):
             kind = 1
             self.i += 4
-        elif self.match("image"):
+        elif self.match("img"):
             kind = 2
             self.i += 5
         else:
+            self.i -= 1
             return None
-        
+    
         while self.peek() == ' ':
             self.i += 1
-
+    
         if self.peek() == '"':
             self.i += 1
         else:
             return None
+    
         start = self.i
-
-        while self.peek != '"' and self.peek() != '\0':
+    
+        while self.peek() != '"' and self.peek() != '\0':
             self.i += 1
-        
-        if not self.peek() == '"':
+    
+        if self.peek() != '"':
             return None
-
-        path = self.content[start:self.i]
+    
+        path = self.content[start+1:self.i+1]
         self.i += 1
+        print(f'link of kind: {kind}, path: {path}')
         return MdLink(kind=kind, content=path)
 
     def parse(self):
         while self.i < self.len:
             token = None
 
-            if (token := self.parse_list()):
-                self.env.append(token)
+            if (token := self.parse_link()):
+                self.links.append(token)
             elif (token := self.parse_task()):
                 self.tokens.append(MdTag(kind=MdKind.TASK, task=token))
             elif (token := self.parse_list()):
